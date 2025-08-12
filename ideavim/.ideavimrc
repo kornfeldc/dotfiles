@@ -1,0 +1,171 @@
+" --------------------------------------------------- BASIC SETTINGS--------------------------------------------------- 
+
+" Show a few lines of context around the cursor. Note that this makes the
+" text scroll if you mouse-click near the start or end of the window.
+set scrolloff=5
+
+" 'vim' refactoring
+set idearefactormode=keep
+" ingelligent line joining
+set ideajoin
+
+" Do incremental searching.
+set incsearch
+set ignorecase
+set smartcase
+set showratch               " show matching
+set clipboard+=unnamed
+set relativenumber
+set number 
+set visualbell
+set noerrorbells
+set tabstop=4               " number of columns occupied by a tab 
+set softtabstop=4           " see multiple spaces as tabstops so <BS> does the right thing
+set expandtab               " converts tabs to white space
+set shiftwidth=4            " width for autoindents
+set autoindent              " indent a new line the same amount as the line just typed
+
+" https://youtrack.jetbrains.com/issue/VIM-1970/Highlight-after-copying-in-vim-mode
+set highlightedyank
+
+" custom leader Key (space)
+let mapleader = " "
+
+" Don't use Ex mode, use Q for formatting.
+map Q gq
+
+" when yanking a block, cursor does not jump to first character anymore
+vmap y ygv<Esc>
+
+
+"" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
+"" Map \r to the Reformat Code action
+"map \r <Action>(ReformatCode)
+
+" Map <leader>d to start debug
+"map <leader>d <Action>(Debug)
+
+"" Map \b to toggle the breakpoint on the current line
+"map \b <Action>(ToggleLineBreakpoint)
+
+" Find more examples here: https://jb.gg/share-ideavimrc
+
+
+
+
+" --------------------------------------------------- PLUGINS--------------------------------------------------- 
+
+" https://plugins.jetbrains.com/plugin/25897-vim-functiontextobj 
+" FunctionTextObj (IdeaVim extension)
+" These text objects work with all Vim operators and in visual mode:
+" dif  - delete the function body
+" caf  - change the entire function
+" vif  - visually select the function body
+" yaf  - yank (copy) the entire function
+set functiontextobj
+
+
+" https://plugins.jetbrains.com/plugin/19162-vimmulticursor
+" Cursor Management
+"     mcc: Add or remove a cursor highlight at the current position (preview mode)
+"     mcr: Convert cursor highlights to active editing cursors
+"     mcd: Remove all cursors and highlights
+"     mcia: Place cursors inside any brackets or quotes ((), [], {}, "", '', ``)
+"     mcaa: Place cursors around any brackets or quotes
+"     mcaw: Add cursors at word boundaries (at the start and end of current word)
+set multicursor
+
+
+" https://plugins.jetbrains.com/plugin/26871-fast-peek
+nmap K :action com.github.vsuhanov.fastpeek.peek<CR>
+
+" Easymotion remap
+" Show easymotion targets immediately
+Plug 'easymotion/vim-easymotion'
+map ff <Plug>(easymotion-s)
+
+" Commentary Plugin (Use 'gc' to comment/uncomment selection, or 'gcc' for the current line)
+Plug 'tpope/vim-commentary' 
+
+" Nerdtree setup
+"Keyboard Commands
+" t : Open the selected file in a new tab.
+" i : Open the selected file in a horizontal split window.
+" s : Open the selected file in a vertical split window.
+" I : Toggle hidden files.
+" m : Show the NERD Tree menu.
+" R : Refresh the tree, useful if files change outside of Vim.
+" ? : toggle nerd tree's quick help."
+Plug 'preservim/nerdtree'
+map <leader>o :NERDTree<CR>
+
+
+
+
+" --------------------------------------------------- IDE ACTIONS --------------------------------------------------- 
+" --- GIT
+map <leader>m <Action>(Git.Merge)
+map <leader>b <Action>(Git.Branches)<CR>
+map <leader>u :action Git.Pull<CR>
+map <leader>fe :action Git.Fetch<CR>
+map <leader>k <Action>(CheckinProject)
+map <leader>p <Action>(Vcs.Push)
+map <leader>n <Action>(Git.CreateNewBranch)
+
+" --- Navigation
+map <leader>s <Action>(Back)<CR>
+noremap ,, :action RecentFiles<CR>
+nnoremap .. :action GotoFile<CR>
+map <A-j> <Action>(MethodDown)
+map <A-k> <Action>(MethodUp)
+map <leader>d <Action>(GotoDeclaration)
+
+" --- Tool Windows and Popups
+nnoremap <leader>gg :action FileStructurePopup<CR>
+nnoremap <leader>yy :action ChangeLaf<CR>
+nnoremap <leader>ys :action ChangeColorScheme<CR>
+nnoremap <leader>aa :action GotoAction<CR> 
+nnoremap <leader>co :action CloseAllEditorsButActive<CR> 
+nnoremap <leader>re :action RefactoringMenu<CR>
+nnoremap <leader>ü :action RiderManageRecentProjects<CR>
+nnoremap <A-b> :action ActiveConfiguration<CR>
+map <leader>db <Action>(ActivateDatabaseToolWindow)
+map <leader>f <Action>(CodeCleanUp)
+map <leader>r :action ReformatCode<CR> 
+map <leader>x <Action>(ExtractMethod)
+
+" --- Other Actions
+map <leader>t <Action>(ActivateTerminalToolWindow)
+map <leader>i <Action>(HideAllWindows)
+map <leader>c <Action>(CloseContent)
+nnoremap <leader>cs :action ChangeSplitOrientation<CR>
+nnoremap <leader>cn :action ClearAllNotifications<CR>
+nnoremap <leader>zz :action ToggleDistractionFreeMode<CR>
+nnoremap <leader># :action RebuildSolutionAction<CR>
+nnoremap <leader>ä :action Tool_External Tools_lib<CR>
+
+
+
+
+" --------------------------------------------------- OTHER MAPPINGS --------------------------------------------------- 
+" go to front or back of line with leader l/h
+map <leader>l $ 
+map <leader>h 0w
+
+" override control+s to :w
+noremap <C-s> :w<CR>
+vnoremap <C-s> <ESC>:w<CR>
+
+" map Ctrl u/d scrolling to Ctrl-Alt j/k and center screen after scrolling 
+map <C-A-k> <C-u>zz<CR>
+map <C-A-j> <C-d>zz<CR>
+map <C-k> <C-u>zz<CR>
+map <C-j> <C-d>zz<CR>
+
+" change pasting behaviour (https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text)
+xnoremap p "_dP
+
+" change to normal mode when tab changes
+autocmd TabLeave * normal <ESC>
+autocmd TabEnter * normal <ESC>
+autocmd FocusGained * normal <ESC>
