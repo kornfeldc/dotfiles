@@ -82,7 +82,7 @@ nmap K :action com.github.vsuhanov.fastpeek.peek<CR>
 " Easymotion remap
 " Show easymotion targets immediately
 Plug 'easymotion/vim-easymotion'
-map ff <Plug>(easymotion-s)
+map s <Plug>(easymotion-s)
 
 " Commentary Plugin (Use 'gc' to comment/uncomment selection, or 'gcc' for the current line)
 Plug 'tpope/vim-commentary' 
@@ -163,6 +163,12 @@ map <C-A-k> <C-u>zz<CR>
 map <C-A-j> <C-d>zz<CR>
 map <C-k> <C-u>zz<CR>
 map <C-j> <C-d>zz<CR>
+
+" map search command, and also a "sp" as search command with contents of clipboard (* register)
+" "sv" only works in visual mode, it puts the selected text into the "a" register and then starts a search with it
+map ss /
+map sp /<C-r>*
+vnoremap sv \"ay<Esc>/<C-r>a
 
 " change pasting behaviour (https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text)
 xnoremap p "_dP
