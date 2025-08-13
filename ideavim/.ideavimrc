@@ -119,6 +119,7 @@ nnoremap .. :action GotoFile<CR>
 map <A-j> <Action>(MethodDown)
 map <A-k> <Action>(MethodUp)
 map <leader>d <Action>(GotoDeclaration)
+nnoremap gl :action JumpToLastChange<CR>
 
 " --- Tool Windows and Popups
 nnoremap <leader>gg :action FileStructurePopup<CR>
@@ -133,6 +134,7 @@ map <leader>db <Action>(ActivateDatabaseToolWindow)
 map <leader>f <Action>(CodeCleanUp)
 map <leader>r :action ReformatCode<CR> 
 map <leader>x <Action>(ExtractMethod)
+map ü <Action>(EditorPopupMenu)
 
 " --- Other Actions
 map <leader>t <Action>(ActivateTerminalToolWindow)
