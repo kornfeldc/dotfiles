@@ -25,6 +25,9 @@ set expandtab               " converts tabs to white space
 set shiftwidth=4            " width for autoindents
 set autoindent              " indent a new line the same amount as the line just typed
 
+set timeoutlen=200    " Time in milliseconds to wait for a mapped sequence
+set ttimeoutlen=100   " Time in milliseconds to wait for a key code sequence
+
 " https://youtrack.jetbrains.com/issue/VIM-1970/Highlight-after-copying-in-vim-mode
 set highlightedyank
 
@@ -151,8 +154,8 @@ nnoremap <leader>ä :action Tool_External Tools_lib<CR>
 
 " --------------------------------------------------- OTHER MAPPINGS --------------------------------------------------- 
 " go to front or back of line with leader l/h
-map <leader>l $ 
-map <leader>h 0w
+noremap <leader>l $
+noremap <leader>h 0
 
 " override control+s to :w
 noremap <C-s> :w<CR>
