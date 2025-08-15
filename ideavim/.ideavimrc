@@ -169,9 +169,11 @@ map <C-j> <C-d>zz<CR>
 
 " map search command, and also a "sp" as search command with contents of clipboard (* register)
 " "sv" only works in visual mode, it puts the selected text into the "a" register and then starts a search with it
+" "sw" marks the current word and executs "sv" 
 map ss /
 map sp /<C-r>*
 vnoremap sv \"ay<Esc>/<C-r>a
+nnoremap sw viw\"ay<Esc>/<C-r>a
 
 " change pasting behaviour (https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text)
 xnoremap p "_dP
