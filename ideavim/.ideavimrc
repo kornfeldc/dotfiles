@@ -69,6 +69,19 @@ set functiontextobj
 
 
 " https://plugins.jetbrains.com/plugin/19162-vimmulticursor
+" Basic Usage
+"     mc + command: Create multiple cursors
+"     ms + command: Create multiple selections
+"     All commands work within selected text when there's an active selection
+" Available Commands
+"     mc/ + search: Add cursors at all occurrences of search regex.
+"     mcfx, mcFx: Add cursors at all occurrences of character x.
+"     mcw, mcW, mcb, mcB: Add cursors at words start.
+"     mce, mcE: Add cursors at words end.
+"     mcaw: Around word
+"     mca + bracket: Around bracket, like mca(/mcab, mca{/mcaB, mca", etc
+"     mci + bracket: Inside bracket, like mci(/mcib, mci{/mciB, mci", etc
+"     mcaa/mcia: any bracket
 " Cursor Management
 "     mcc: Add or remove a cursor highlight at the current position (preview mode)
 "     mcr: Convert cursor highlights to active editing cursors
@@ -134,8 +147,7 @@ nnoremap <leader>re :action RefactoringMenu<CR>
 nnoremap <leader>ü :action RiderManageRecentProjects<CR>
 nnoremap <A-b> :action ActiveConfiguration<CR>
 map <leader>db <Action>(ActivateDatabaseToolWindow)
-map <leader>f <Action>(CodeCleanUp)
-map <leader>r :action ReformatCode<CR> 
+noremap <leader>f :action CodeCleanup<CR>
 map <leader>x <Action>(ExtractMethod)
 map ü <Action>(EditorPopupMenu)
 
