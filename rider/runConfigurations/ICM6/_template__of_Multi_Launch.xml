@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="com.intellij.execution.configurations.multilaunch" factoryName="MultiLaunchConfiguration">
+    <method v="2" />
+  </configuration>
+</component>
