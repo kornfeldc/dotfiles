@@ -3,12 +3,12 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 # Check if running as admin
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Host "Restarting script as Administrator..."
-    Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    Start-Process powershell -Verb runAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -NoExit"
     exit
 }
 
 # --- Script continues here with admin rights ---
-Write-Host "Running with Administrator privileges."
+Write-Host "Running with Administrator privileges." -ForegroundColor Green
 
 $homedir = $env:USERPROFILE
 $dotfiles = "$homedir\source\repos\dotfiles"
@@ -252,4 +252,9 @@ switch ($mode) {
 
 Write-Host ""
 Write-Host "=== Dotfiles setup completed! ===" -ForegroundColor Green
+
+# Keep the window open so you can see the results
+Write-Host ""
+Write-Host "Press any key to exit..." -ForegroundColor Yellow
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
