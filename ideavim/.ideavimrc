@@ -133,6 +133,8 @@ map <leader>db <Action>(ActivateDatabaseToolWindow)
 noremap rr :action CodeCleanup<CR>
 map <leader>x <Action>(ExtractMethod)
 map ü <Action>(EditorPopupMenu)
+map <A-i> <Action>(Vcs.LLMCommitMessageAction)
+" AI Commit Message Action Vcs.LLMCommitMessageAction
 
 " --- Other Actions
 map <leader>t <Action>(ActivateTerminalToolWindow)
