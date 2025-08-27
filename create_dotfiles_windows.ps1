@@ -14,33 +14,73 @@ $homedir = $env:USERPROFILE
 $dotfiles = "$homedir\source\repos\dotfiles"
 $reposDir = "$homedir\Source\Repos"
 
-# Function to safely handle file operations
+# Function to safely handle file operations with intelligent backup/restore
 function Create-SafeSymlink {
     param(
         [string]$SourcePath,
-        [string]$TargetPath
+        [string]$TargetPath,
+        [string]$Mode = "AUTO"  # AUTO, BACKUP, RESTORE
     )
     
     Write-Host "Processing: $SourcePath"
     
-    # Check if source is already a symlink
-    if (Test-Path $SourcePath -PathType Leaf) {
-        $item = Get-Item $SourcePath
-        if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
-            Write-Host "  Already a symlink, skipping move operation"
-        } else {
-            Write-Host "  Moving original file to dotfiles"
+    # Determine operation mode if AUTO
+    if ($Mode -eq "AUTO") {
+        $sourceExists = Test-Path $SourcePath
+        $targetExists = Test-Path $TargetPath
+        
+        if ($sourceExists -and !$targetExists) {
+            $Mode = "BACKUP"
+        }
+        elseif (!$sourceExists -and $targetExists) {
+            $Mode = "RESTORE"
+        }
+        elseif ($sourceExists -and $targetExists) {
+            $Mode = "SYNC"
+        }
+        else {
+            Write-Host "  Neither source nor target exists, skipping" -ForegroundColor Yellow
+            return
+        }
+    }
+    
+    switch ($Mode) {
+        "BACKUP" {
+            Write-Host "  Mode: BACKUP - Moving file to dotfiles and creating symlink"
             # Ensure target directory exists
             $targetDir = Split-Path $TargetPath -Parent
             if (!(Test-Path $targetDir)) {
                 New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
             }
-            Move-Item $SourcePath $TargetPath -ErrorAction SilentlyContinue
+            
+            # Check if source is already a symlink
+            if (Test-Path $SourcePath -PathType Leaf) {
+                $item = Get-Item $SourcePath
+                if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+                    Write-Host "    Already a symlink, skipping move operation"
+                } else {
+                    Move-Item $SourcePath $TargetPath -ErrorAction SilentlyContinue
+                }
+            }
+        }
+        
+        "RESTORE" {
+            Write-Host "  Mode: RESTORE - Creating symlink from dotfiles"
+            # Ensure source directory exists
+            $sourceDir = Split-Path $SourcePath -Parent
+            if (!(Test-Path $sourceDir)) {
+                New-Item -ItemType Directory -Path $sourceDir -Force | Out-Null
+            }
+        }
+        
+        "SYNC" {
+            Write-Host "  Mode: SYNC - Both exist, updating symlink"
+            # In sync mode, we assume dotfiles version is authoritative
         }
     }
     
     # Create or recreate symlink
-    Write-Host "  Creating symlink"
+    Write-Host "  Creating symlink: $SourcePath -> $TargetPath"
     New-Item -ItemType SymbolicLink -Path $SourcePath -Target $TargetPath -Force
 }
 
@@ -48,67 +88,167 @@ function Create-SafeSymlink {
 function Process-RiderRunConfigurations {
     param(
         [string]$ReposDirectory,
-        [string]$DotfilesDirectory
+        [string]$DotfilesDirectory,
+        [string]$Mode = "BACKUP"
     )
     
     Write-Host ""
-    Write-Host "=== Scanning for Rider Run Configurations ===" -ForegroundColor Cyan
+    Write-Host "=== Rider Run Configurations ($Mode mode) ===" -ForegroundColor Cyan
     
-    if (!(Test-Path $ReposDirectory)) {
-        Write-Host "Repos directory not found: $ReposDirectory" -ForegroundColor Yellow
-        return
-    }
-    
-    # Find all runConfigurations directories
-    $runConfigPaths = Get-ChildItem -Path $ReposDirectory -Recurse -Directory -Name "runConfigurations" | 
-                      ForEach-Object { Join-Path $ReposDirectory $_ }
-    
-    if ($runConfigPaths.Count -eq 0) {
-        Write-Host "No runConfigurations directories found" -ForegroundColor Yellow
-        return
-    }
-    
-    Write-Host "Found $($runConfigPaths.Count) runConfigurations directories:" -ForegroundColor Green
-    
-    foreach ($runConfigPath in $runConfigPaths) {
-        Write-Host "  $runConfigPath" -ForegroundColor Gray
-        
-        # Extract project name from path
-        # C:\Users\christian.kornfeld\Source\Repos\ICM6\.idea\.idea.ICM6\.idea\runConfigurations
-        $relativePath = $runConfigPath.Replace($ReposDirectory, "").TrimStart("\")
-        $projectName = $relativePath.Split("\")[0]
-        
-        Write-Host "    Project: $projectName" -ForegroundColor Gray
-        
-        # Get all XML files in the runConfigurations directory
-        $configFiles = Get-ChildItem -Path $runConfigPath -Filter "*.xml" -File
-        
-        if ($configFiles.Count -eq 0) {
-            Write-Host "    No XML configuration files found" -ForegroundColor Yellow
-            continue
+    if ($Mode -eq "BACKUP") {
+        if (!(Test-Path $ReposDirectory)) {
+            Write-Host "Repos directory not found: $ReposDirectory" -ForegroundColor Yellow
+            return
         }
         
-        Write-Host "    Found $($configFiles.Count) configuration files" -ForegroundColor Green
+        # Find all runConfigurations directories
+        $runConfigPaths = Get-ChildItem -Path $ReposDirectory -Recurse -Directory -Name "runConfigurations" | 
+                          ForEach-Object { Join-Path $ReposDirectory $_ }
         
-        foreach ($configFile in $configFiles) {
-            # Create target path maintaining project structure
-            $targetPath = Join-Path $DotfilesDirectory "rider\runConfigurations\$projectName\$($configFile.Name)"
+        if ($runConfigPaths.Count -eq 0) {
+            Write-Host "No runConfigurations directories found" -ForegroundColor Yellow
+            return
+        }
+        
+        Write-Host "Found $($runConfigPaths.Count) runConfigurations directories"
+        
+        foreach ($runConfigPath in $runConfigPaths) {
+            # Extract project name from path
+            $relativePath = $runConfigPath.Replace($ReposDirectory, "").TrimStart("\")
+            $projectName = $relativePath.Split("\")[0]
             
-            # Process the file
-            Create-SafeSymlink $configFile.FullName $targetPath
+            Write-Host "  Project: $projectName"
+            
+            # Get all XML files in the runConfigurations directory
+            $configFiles = Get-ChildItem -Path $runConfigPath -Filter "*.xml" -File
+            
+            foreach ($configFile in $configFiles) {
+                $targetPath = Join-Path $DotfilesDirectory "rider\runConfigurations\$projectName\$($configFile.Name)"
+                Create-SafeSymlink $configFile.FullName $targetPath "BACKUP"
+            }
+        }
+    }
+    else {
+        # RESTORE mode
+        $riderConfigsPath = Join-Path $DotfilesDirectory "rider\runConfigurations"
+        
+        if (!(Test-Path $riderConfigsPath)) {
+            Write-Host "No rider configurations found in dotfiles" -ForegroundColor Yellow
+            return
+        }
+        
+        # Get all project directories in dotfiles
+        $projectDirs = Get-ChildItem -Path $riderConfigsPath -Directory
+        
+        Write-Host "Found configurations for $($projectDirs.Count) projects"
+        
+        foreach ($projectDir in $projectDirs) {
+            $projectName = $projectDir.Name
+            Write-Host "  Project: $projectName"
+            
+            # Check if project exists in repos
+            $projectPath = Join-Path $ReposDirectory $projectName
+            if (!(Test-Path $projectPath)) {
+                Write-Host "    Project directory not found, skipping" -ForegroundColor Yellow
+                continue
+            }
+            
+            # Find or create the runConfigurations directory in the project
+            $runConfigPath = Get-ChildItem -Path $projectPath -Recurse -Directory -Name "runConfigurations" | 
+                             Select-Object -First 1 | 
+                             ForEach-Object { Join-Path $projectPath $_ }
+            
+            if (!$runConfigPath) {
+                Write-Host "    No runConfigurations directory found, skipping" -ForegroundColor Yellow
+                continue
+            }
+            
+            # Get all config files in dotfiles for this project
+            $configFiles = Get-ChildItem -Path $projectDir.FullName -Filter "*.xml" -File
+            
+            foreach ($configFile in $configFiles) {
+                $sourcePath = Join-Path $runConfigPath $configFile.Name
+                Create-SafeSymlink $sourcePath $configFile.FullName "RESTORE"
+            }
         }
     }
 }
 
+# Function to determine overall operation mode
+function Get-OperationMode {
+    # Check individual files
+    $ideavimrcExists = Test-Path "$homedir\.ideavimrc"
+    $ideavimrcInDotfiles = Test-Path "$dotfiles\ideavim\.ideavimrc"
+    $ahkExists = Test-Path "$homedir\Documents\AutoHotkey\Untitled.ahk"
+    $ahkInDotfiles = Test-Path "$dotfiles\ahk\Untitled.ahk"
+    
+    # Check Rider configs
+    $hasRunConfigsInRepos = (Get-ChildItem -Path $reposDir -Recurse -Directory -Name "runConfigurations" -ErrorAction SilentlyContinue).Count -gt 0
+    $riderConfigsPath = Join-Path $dotfiles "rider\runConfigurations"
+    $hasRunConfigsInDotfiles = (Test-Path $riderConfigsPath) -and ((Get-ChildItem -Path $riderConfigsPath -Directory -ErrorAction SilentlyContinue).Count -gt 0)
+    
+    # Decision logic
+    $filesInOriginalLocation = $ideavimrcExists -or $ahkExists -or $hasRunConfigsInRepos
+    $filesInDotfiles = $ideavimrcInDotfiles -or $ahkInDotfiles -or $hasRunConfigsInDotfiles
+    
+    if ($filesInOriginalLocation -and !$filesInDotfiles) {
+        return "BACKUP"    # First time backup
+    }
+    elseif (!$filesInOriginalLocation -and $filesInDotfiles) {
+        return "RESTORE"   # Restore after PC reset
+    }
+    elseif ($filesInOriginalLocation -and $filesInDotfiles) {
+        return "SYNC"      # Both exist, sync mode
+    }
+    else {
+        return "NONE"      # Nothing found
+    }
+}
+
+# Main execution
+$mode = Get-OperationMode
 Write-Host ""
-Write-Host "=== Processing Individual Files ===" -ForegroundColor Cyan
+Write-Host "=== Operation Mode: $mode ===" -ForegroundColor Cyan
 
-# Use the function for individual files
-Create-SafeSymlink "$homedir\.ideavimrc" "$dotfiles\ideavim\.ideavimrc"
-Create-SafeSymlink "$homedir\Documents\AutoHotkey\Untitled.ahk" "$dotfiles\ahk\Untitled.ahk"
-
-# Process all Rider run configurations
-Process-RiderRunConfigurations $reposDir $dotfiles
+switch ($mode) {
+    "BACKUP" {
+        Write-Host "Backing up all configurations to dotfiles..." -ForegroundColor Green
+        
+        # Individual files
+        Create-SafeSymlink "$homedir\.ideavimrc" "$dotfiles\ideavim\.ideavimrc" "BACKUP"
+        Create-SafeSymlink "$homedir\Documents\AutoHotkey\Untitled.ahk" "$dotfiles\ahk\Untitled.ahk" "BACKUP"
+        
+        # Rider configurations
+        Process-RiderRunConfigurations $reposDir $dotfiles "BACKUP"
+    }
+    
+    "RESTORE" {
+        Write-Host "Restoring all configurations from dotfiles..." -ForegroundColor Green
+        
+        # Individual files
+        Create-SafeSymlink "$homedir\.ideavimrc" "$dotfiles\ideavim\.ideavimrc" "RESTORE"
+        Create-SafeSymlink "$homedir\Documents\AutoHotkey\Untitled.ahk" "$dotfiles\ahk\Untitled.ahk" "RESTORE"
+        
+        # Rider configurations
+        Process-RiderRunConfigurations $reposDir $dotfiles "RESTORE"
+    }
+    
+    "SYNC" {
+        Write-Host "Synchronizing configurations..." -ForegroundColor Green
+        
+        # Individual files (AUTO mode will handle appropriately)
+        Create-SafeSymlink "$homedir\.ideavimrc" "$dotfiles\ideavim\.ideavimrc"
+        Create-SafeSymlink "$homedir\Documents\AutoHotkey\Untitled.ahk" "$dotfiles\ahk\Untitled.ahk"
+        
+        # Rider configurations
+        Process-RiderRunConfigurations $reposDir $dotfiles "BACKUP"
+    }
+    
+    "NONE" {
+        Write-Host "No configurations found in either location" -ForegroundColor Yellow
+        Write-Host "Please ensure your dotfiles repository contains configurations, or create some configurations first" -ForegroundColor Yellow
+    }
+}
 
 Write-Host ""
 Write-Host "=== Dotfiles setup completed! ===" -ForegroundColor Green
