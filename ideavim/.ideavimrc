@@ -40,22 +40,6 @@ map Q gq
 " when yanking a block, cursor does not jump to first character anymore
 vmap y ygv<Esc>
 
-
-"" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
-"" Map \r to the Reformat Code action
-"map \r <Action>(ReformatCode)
-
-" Map <leader>d to start debug
-"map <leader>d <Action>(Debug)
-
-"" Map \b to toggle the breakpoint on the current line
-"map \b <Action>(ToggleLineBreakpoint)
-
-" Find more examples here: https://jb.gg/share-ideavimrc
-
-
-
-
 " --------------------------------------------------- PLUGINS--------------------------------------------------- 
 
 " https://plugins.jetbrains.com/plugin/25897-vim-functiontextobj 
@@ -142,12 +126,11 @@ nnoremap <leader>gg :action FileStructurePopup<CR>
 nnoremap <leader>yy :action ChangeLaf<CR>
 nnoremap <leader>ys :action ChangeColorScheme<CR>
 nnoremap <leader>aa :action GotoAction<CR> 
-nnoremap <leader>co :action CloseAllEditorsButActive<CR> 
 nnoremap <leader>re :action RefactoringMenu<CR>
 nnoremap <leader>ü :action RiderManageRecentProjects<CR>
 nnoremap <A-b> :action ActiveConfiguration<CR>
 map <leader>db <Action>(ActivateDatabaseToolWindow)
-noremap <leader>f :action CodeCleanup<CR>
+noremap rr :action CodeCleanup<CR>
 map <leader>x <Action>(ExtractMethod)
 map ü <Action>(EditorPopupMenu)
 
@@ -158,9 +141,6 @@ map <leader>c <Action>(CloseContent)
 nnoremap <leader>cs :action ChangeSplitOrientation<CR>
 nnoremap <leader>cn :action ClearAllNotifications<CR>
 nnoremap <leader>zz :action ToggleDistractionFreeMode<CR>
-nnoremap <leader># :action RebuildSolutionAction<CR>
-nnoremap <leader>ä :action Tool_External Tools_lib<CR>
-
 
 
 
