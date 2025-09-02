@@ -64,9 +64,12 @@ echo "Dotfiles directory: $dotfiles"
 
 # Process .ideavimrc
 handle_file "$homedir/.ideavimrc" "$dotfiles/ideavim/.ideavimrc"
-
 # Process AutoHotkey file (keeping for reference, though not common on macOS)
 handle_file "$homedir/Documents/AutoHotkey/Untitled.ahk" "$dotfiles/ahk/Untitled.ahk"
+# Process Hammerspoon toml 
+handle_file "$homedir/.hammerspoon/Spoons/Hammerflow.spoon/sample.toml" "$dotfiles/hammerflow/sample.toml"
+# Process Obsidian vimrc 
+handle_file "$homedir/Obsidian/Christian/.obsidian.vimrc" "$dotfiles/obsidian/.obsidian.vimrc"
 
 echo ""
 echo "Dotfiles setup completed!"
