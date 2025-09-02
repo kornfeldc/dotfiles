@@ -1,0 +1,127 @@
+#################################################
+# This file is a sample of some things you 
+# can do with this leader key setup. It's active
+# right now! Set leader_key below and try it! The 
+# lua prioritizes home.toml, then work.toml,
+# then falls back to this sample.toml. If you
+# want different profile names, you can add it
+# to the list in ~/.hammerspoon/init.lua. 
+#################################################
+
+# settings
+leader_key = "f18"         # required, the leader key that starts the sequence
+leader_key_mods = ""      # optional, default "", not recommended - a dedicated leader key is better
+                             # supports cmd ctrl alt shift
+auto_reload = true        # optional, default true, reload when any file in this directory is saved
+toast_on_reload = true    # optional, default false, show a toast when the config is reloaded
+show_ui = true            # optional, default true, show the ui with your key maps
+
+h = ["raycast://extensions/raycast/clipboard-history/clipboard-history", "Clipboard History"]
+z = "Zen"
+t = "Warp"
+1 = ["shortcut:option shift h", "First Desktop"]
+2 = ["shortcut:option shift l", "Second Desktop"]
+
+[s] # System 
+label = "System"
+l = ["raycast://extensions/raycast/system/lock-screen", "Lock"]
+s = ["raycast://extensions/raycast/system/sleep-displays", "Sleep display"]
+
+[a] # Apps
+label = "Apps"
+z = "Zen"
+w = "Warp"
+b = "Bazecor"
+m = "Spark Desktop"
+t = "Microsoft Teams"
+n = "Neovide"
+i = "Rider"
+r = "Jump Desktop"
+g = "ChatGPT"
+s = "Spotify"
+
+[l] # Links
+label = "Links"
+i = ["https://icm.nexera.one", "ICM"]
+y = ["https://youtube.com", "Youtube"]
+
+[m] # Mission Control 
+label = "Mission Control"
+h = ["shortcut:option shift h", "left"]
+l = ["shortcut:option shift l", "right"]
+
+[w] # Window
+label = "Window"
+h = ["raycast://extensions/raycast/window-management/left-half", "left half"]
+l = ["raycast://extensions/raycast/window-management/right-half", "right half"]
+q = ["shortcut:cmd q", "quit"]
+m = ["shortcut:cmd m", "minimize"]
+a = ["raycast://extensions/peduarte/hide-all-apps/index", "hide all"]
+
+
+[c] # Configs
+label = "Configs"
+h = ["cmd:neovide ~/.hammerspoon/Spoons/Hammerflow.spoon/sample.toml", "hammerspoon"]
+o = ["cmd:neovide ~/Obsidian/Christian/.obsidian.vimrc", "obsidian"]
+
+## groups can be nested too!
+#[l.m]
+#label = "[me]"
+#g = ["https://github.com/saml-dev", "my github"]
+#b = ["https://bsky.app/profile/saml.dev", "my bluesky"]
+#t = ["https://twitter.com/saml_dev", "my twitter"]
+#
+#
+## raycast deep links are supported
+#[r]
+#label = "[raycast]"
+#c = ["raycast://extensions/raycast/raycast/confetti", "confetti"]
+#e = ["raycast://extensions/raycast/emoji-symbols/search-emoji-symbols", "emoji"]
+#
+#
+## use prefixes for special actions
+#[p]
+#label = "[prefixes]"
+#t = "text:sam@saml.dev"       # types "sam@saml.dev"
+#z = "cmd:code ~/.zshrc"       # run any terminal command
+#x = "code: ~/.zshrc"          # open a file or directory in VS Code
+#s = "shortcut:cmd shift 4"    # trigger a keyboard shortcut
+#r = "reload"                  # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
+#i = "input:https://google.com/search?q={input}" # capture input and insert it into any other action
+#
+#
+## we have window management too!
+#[w]
+#label = "[window]"
+#h = "window:left-half"                    # use presets listed in the README
+#c = "window:center-half"                  # use presets listed in the README
+#s = ["window:.4,.3,.2,.4","small center"] # or use 4 percentages for x,y,width,height for custom placement - more details in README
+#
+#
+## or use raycast for window management if you prefer
+#[w.r]
+#label = "[raycast-window]"
+#h = ["raycast://extensions/raycast/window-management/left-half", "left half"]
+#l = ["raycast://extensions/raycast/window-management/right-half", "right half"]
+#c = ["raycast://extensions/raycast/window-management/center-half", "center half"]
+#
+#
+## this group is handy to copy over
+## for quick access to your config
+#[h]
+#label = "[hammerspoon]"
+#c = "code: ~/.hammerspoon"
+#r = "reload" # reserved for reloading your hammerspoon config (helpful when auto_reload is false)
+#
+#
+## glhf :) share your cool ideas with me on
+## twitter @saml_dev - <leader> l m t
+## bluesky @saml.dev - <leader> l m b
+## github saml-dev   - <leader> l m g
+#
+#
+## for advanced hammerspoon users, you can use
+## the hs: prefix as an escape hatch to run any
+## hammerspoon command you want.
+#[z]
+#z = "hs:hs.alert('Hello, world!')"
