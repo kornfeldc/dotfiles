@@ -181,6 +181,8 @@ function Get-OperationMode {
     $ideavimrcInDotfiles = Test-Path "$dotfiles\ideavim\.ideavimrc"
     $ahkExists = Test-Path "$homedir\Documents\AutoHotkey\Untitled.ahk"
     $ahkInDotfiles = Test-Path "$dotfiles\ahk\Untitled.ahk"
+    $ahkWbExists = Test-Path "$homedir\Documents\AutoHotkey\Windowborder.ahk"
+    $ahkWbInDotfiles = Test-Path "$dotfiles\ahk\Windowborder.ahk"
     
     # Check Rider configs
     $hasRunConfigsInRepos = (Get-ChildItem -Path $reposDir -Recurse -Directory -Name "runConfigurations" -ErrorAction SilentlyContinue).Count -gt 0
@@ -188,8 +190,8 @@ function Get-OperationMode {
     $hasRunConfigsInDotfiles = (Test-Path $riderConfigsPath) -and ((Get-ChildItem -Path $riderConfigsPath -Directory -ErrorAction SilentlyContinue).Count -gt 0)
     
     # Decision logic
-    $filesInOriginalLocation = $ideavimrcExists -or $ahkExists -or $hasRunConfigsInRepos
-    $filesInDotfiles = $ideavimrcInDotfiles -or $ahkInDotfiles -or $hasRunConfigsInDotfiles
+    $filesInOriginalLocation = $ideavimrcExists -or $ahkExists -or $ahkWbExists -or $hasRunConfigsInRepos
+    $filesInDotfiles = $ideavimrcInDotfiles -or $ahkInDotfiles -or $ahkWbInDotfiles -or $hasRunConfigsInDotfiles
     
     if ($filesInOriginalLocation -and !$filesInDotfiles) {
         return "BACKUP"    # First time backup
@@ -217,6 +219,7 @@ switch ($mode) {
         # Individual files
         Create-SafeSymlink "$homedir\.ideavimrc" "$dotfiles\ideavim\.ideavimrc" "BACKUP"
         Create-SafeSymlink "$homedir\Documents\AutoHotkey\Untitled.ahk" "$dotfiles\ahk\Untitled.ahk" "BACKUP"
+        Create-SafeSymlink "$homedir\Documents\AutoHotkey\Windowborder.ahk" "$dotfiles\ahk\Windowborder.ahk" "BACKUP"
         
         # Rider configurations
         Process-RiderRunConfigurations $reposDir $dotfiles "BACKUP"
@@ -228,6 +231,7 @@ switch ($mode) {
         # Individual files
         Create-SafeSymlink "$homedir\.ideavimrc" "$dotfiles\ideavim\.ideavimrc" "RESTORE"
         Create-SafeSymlink "$homedir\Documents\AutoHotkey\Untitled.ahk" "$dotfiles\ahk\Untitled.ahk" "RESTORE"
+        Create-SafeSymlink "$homedir\Documents\AutoHotkey\Windowborder.ahk" "$dotfiles\ahk\Windowborder.ahk" "RESTORE"
         
         # Rider configurations
         Process-RiderRunConfigurations $reposDir $dotfiles "RESTORE"
@@ -239,6 +243,7 @@ switch ($mode) {
         # Individual files (AUTO mode will handle appropriately)
         Create-SafeSymlink "$homedir\.ideavimrc" "$dotfiles\ideavim\.ideavimrc"
         Create-SafeSymlink "$homedir\Documents\AutoHotkey\Untitled.ahk" "$dotfiles\ahk\Untitled.ahk"
+        Create-SafeSymlink "$homedir\Documents\AutoHotkey\Windowborder.ahk" "$dotfiles\ahk\Windowborder.ahk"
         
         # Rider configurations
         Process-RiderRunConfigurations $reposDir $dotfiles "BACKUP"
