@@ -1,9 +1,9 @@
 #Requires AutoHotkey v2.0
 ; === Config ===
-borderColor := "6495ED"   ; e.g. "FF3B30" or "Red"
-;borderColor := "Yellow"   ; e.g. "FF3B30" or "Red"
+;borderColor := "6495ED"   ; light blue 
+borderColor := "BAA972"   ; light yellow 
 borderWidth := 1       ; px
-opacity     := 100     ; 0..255 (255=opaque)
+opacity     := 200     ; 0..255 (255=opaque)
 pollMs      := 40      ; ms
 sizeBuffer  := 9 
 
