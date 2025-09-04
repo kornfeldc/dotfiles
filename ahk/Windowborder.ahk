@@ -12,7 +12,7 @@ inset := { top: 0, right: 0, bottom: 0, left: 0 }
 blacklistClasses := Map(
 ;   "Chrome_WidgetWin_1", true
 )
-minWindowSize := { w: 700, h: 700 }  ; draw on any size >= these
+minWindowSize := { w: 900, h: 900 }  ; draw on any size >= these
 
 ; ===== DPI awareness (Per-Monitor v2 if available) =====
 try {
