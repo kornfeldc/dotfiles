@@ -100,8 +100,6 @@ Plug 'preservim/nerdtree'
 map <leader>o :NERDTree<CR>
 
 
-
-
 " --------------------------------------------------- IDE ACTIONS --------------------------------------------------- 
 " --- GIT
 map <leader>m <Action>(Git.Merge)
@@ -114,22 +112,26 @@ map <leader>n <Action>(Git.CreateNewBranch)
 
 " --- Navigation
 map <leader>s <Action>(Back)<CR>
-noremap ,, :action RecentFiles<CR>
-nnoremap .. :action GotoFile<CR>
 map <A-j> <Action>(MethodDown)
 map <A-k> <Action>(MethodUp)
 map <leader>d <Action>(GotoDeclaration)
 nnoremap gl :action JumpToLastChange<CR>
 
 " --- Tool Windows and Popups
+noremap ,, :action RecentFiles<CR>
+nnoremap .. :action GotoFile<CR>
+nnoremap ++ :action GotoAction<CR>
+nnoremap -- :action RebuildSolutionAction<CR>
 nnoremap <leader>gg :action FileStructurePopup<CR>
 nnoremap <leader>yy :action ChangeLaf<CR>
 nnoremap <leader>ys :action ChangeColorScheme<CR>
-nnoremap <leader>aa :action GotoAction<CR> 
 nnoremap <leader>re :action RefactoringMenu<CR>
 nnoremap <leader>ü :action RiderManageRecentProjects<CR>
+nnoremap üü :action RiderManageRecentProjects<CR>
+nnoremap <A-q> :action QuickJavaDoc<CR>
 nnoremap <A-b> :action ActiveConfiguration<CR>
 map <leader>db <Action>(ActivateDatabaseToolWindow)
+map ßß <Action>(ActivateDatabaseToolWindow)
 noremap rr :action CodeCleanup<CR>
 map <leader>x <Action>(ExtractMethod)
 map ü <Action>(EditorPopupMenu)
@@ -141,16 +143,18 @@ map <A-C-a> <Action>(ActivateAIAssistantToolWindow)
 map <leader>t <Action>(ActivateTerminalToolWindow)
 map <leader>i <Action>(HideAllWindows)
 map <leader>c <Action>(CloseContent)
+map <C-w> <Action>(CloseContent)
 nnoremap <leader>cs :action ChangeSplitOrientation<CR>
 nnoremap <leader>cn :action ClearAllNotifications<CR>
 nnoremap <leader>zz :action ToggleDistractionFreeMode<CR>
 
 
-
 " --------------------------------------------------- OTHER MAPPINGS --------------------------------------------------- 
 " go to front or back of line with leader l/h
 noremap <leader>l $
+noremap <C-l> $
 noremap <leader>h 0
+noremap <C-h> 0
 
 " override control+s to :w
 noremap <C-s> :w<CR>
@@ -165,7 +169,7 @@ map <C-j> <C-d>zz<CR>
 " map search command, and also a "sp" as search command with contents of clipboard (* register)
 " "sv" only works in visual mode, it puts the selected text into the "a" register and then starts a search with it
 " "sw" marks the current word and executs "sv" 
-map ss /
+map ss <Action>(cmdfloat.search)
 map sp /<C-r>*
 vnoremap sv \"ay<Esc>/<C-r>a
 nnoremap sw viw\"ay<Esc>/<C-r>a

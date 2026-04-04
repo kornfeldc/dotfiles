@@ -17,8 +17,9 @@ toast_on_reload = true    # optional, default false, show a toast when the confi
 show_ui = true            # optional, default true, show the ui with your key maps
 
 h = ["raycast://extensions/raycast/clipboard-history/clipboard-history", "Clipboard History"]
-z = "Zen"
+b = "Brave"
 t = "Warp"
+r = "Raycast"
 1 = ["shortcut:option shift h", "First Desktop"]
 2 = ["shortcut:option shift l", "Second Desktop"]
 
