@@ -4,6 +4,10 @@ local config = wezterm.config_builder()
 -- Shell
 config.default_prog = { "/bin/zsh", "-l" }
 
+-- Exit
+config.exit_behavior = "Close"
+config.window_close_confirmation = "NeverPrompt"
+
 -- Appearance
 config.color_scheme = "Poimandres"
 config.font = wezterm.font("JetBrainsMono Nerd Font", { weight = "Medium" })
@@ -50,6 +54,9 @@ config.keys = {
 
   -- Close pane
   { key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
+  
+  -- Close wezterm 
+  { key = "q", mods = "LEADER", action = wezterm.action.QuitApplication },
 
   -- New tab
   { key = "t", mods = "LEADER", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
