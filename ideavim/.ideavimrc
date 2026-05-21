@@ -81,8 +81,20 @@ nmap K :action com.github.vsuhanov.fastpeek.peek<CR>
 
 " Easymotion remap
 " Show easymotion targets immediately
-Plug 'easymotion/vim-easymotion'
-map s <Plug>(easymotion-s)
+" Plug 'easymotion/vim-easymotion'
+" map s <Plug>(easymotion-s)
+
+" flash
+nmap sn <Action>(flash.search)
+xmap sn <Action>(flash.search)
+
+" QuickScope
+set quickscope
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+
+" Which Key Lazy
+set which-key
+set notimeout
 
 " Commentary Plugin (Use 'gc' to comment/uncomment selection, or 'gcc' for the current line)
 Plug 'tpope/vim-commentary' 
@@ -105,12 +117,12 @@ map <leader>o :NERDTree<CR>
 map <leader>m <Action>(Git.Merge)
 map <leader>b <Action>(Git.Branches)<CR>
 map <leader>u :action Git.Pull<CR>
-map <leader>fe :action Git.Fetch<CR>
+map <leader>f :action Git.Fetch<CR>
 map <leader>k <Action>(CheckinProject)
 map <leader>p <Action>(Vcs.Push)
 map <leader>n <Action>(Git.CreateNewBranch)
 
-" --- Navigation
+" --- NavigationctivateAIAssistantToolWindow)
 map <leader>s <Action>(Back)<CR>
 map <A-j> <Action>(MethodDown)
 map <A-k> <Action>(MethodUp)
@@ -120,22 +132,23 @@ nnoremap gl :action JumpToLastChange<CR>
 " --- Tool Windows and Popups
 noremap ,, :action RecentFiles<CR>
 nnoremap .. :action GotoFile<CR>
+" nnoremap .. :action Television.Channel.Files<CR>
 nnoremap ++ :action GotoAction<CR>
 nnoremap -- :action RebuildSolutionAction<CR>
-nnoremap <leader>gg :action FileStructurePopup<CR>
+nnoremap <leader>g :action FileStructurePopup<CR>
 nnoremap <leader>yy :action ChangeLaf<CR>
 nnoremap <leader>ys :action ChangeColorScheme<CR>
-nnoremap <leader>re :action RefactoringMenu<CR>
+nnoremap <leader>r :action RefactoringMenu<CR>
 nnoremap <leader>ü :action RiderManageRecentProjects<CR>
 nnoremap üü :action RiderManageRecentProjects<CR>
 nnoremap <A-q> :action QuickJavaDoc<CR>
 nnoremap <A-b> :action ActiveConfiguration<CR>
-map <leader>db <Action>(ActivateDatabaseToolWindow)
 map ßß <Action>(ActivateDatabaseToolWindow)
 noremap rr :action CodeCleanup<CR>
 map <leader>x <Action>(ExtractMethod)
 map ü <Action>(EditorPopupMenu)
 map <A-C-a> <Action>(ActivateAIAssistantToolWindow)
+map ää <Action>(ActivateAIAssistantToolWindow)
 " currently not working:
 " map <A-C-g> <Action>(Vcs.LLMCommitMessageAction) 
 
@@ -146,7 +159,7 @@ map <leader>c <Action>(CloseContent)
 map <C-w> <Action>(CloseContent)
 nnoremap <leader>cs :action ChangeSplitOrientation<CR>
 nnoremap <leader>cn :action ClearAllNotifications<CR>
-nnoremap <leader>zz :action ToggleDistractionFreeMode<CR>
+nnoremap <leader>z :action ToggleDistractionFreeMode<CR>
 
 
 " --------------------------------------------------- OTHER MAPPINGS --------------------------------------------------- 
@@ -181,3 +194,14 @@ xnoremap p "_dP
 autocmd TabLeave * normal <ESC>
 autocmd TabEnter * normal <ESC>
 autocmd FocusGained * normal <ESC>
+
+
+" --- Bookmarks ---
+nnoremap mma mA
+nnoremap bba 'A
+
+nnoremap mmb mB
+nnoremap bbb 'B
+
+nnoremap mmc mC
+nnoremap bbc 'C
